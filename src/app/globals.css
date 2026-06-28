@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1b120d;      /* espresso gelap, hampir hitam */
+  --surface: #2a1d15;         /* permukaan kartu, sedikit lebih terang */
+  --surface-2: #34241a;       /* hover/border state */
+  --foreground: #f2e8dd;      /* cream, untuk teks utama */
+  --muted: #a8927f;           /* teks sekunder, abu-kecoklatan */
+  --accent: #d98e3f;          /* karamel/amber, satu-satunya warna terang */
+  --accent-dark: #b8722c;
+  --danger: #c2553f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-danger: var(--danger);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jbmono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Coffee-ring stain: signature dekoratif, dipakai SEKALI sebagai elemen tanda tangan */
+.coffee-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
