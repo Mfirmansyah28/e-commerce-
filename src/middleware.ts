@@ -1,16 +1,26 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
+// Middleware ini sengaja dibuat RINGAN (tanpa import Auth.js)
+// supaya tidak melebihi batas 1MB Edge Function di Vercel free plan.
+// Proteksi route admin yang sebenarnya tetap ada di masing-masing
+// page server component (src/app/admin/layout.tsx) menggunakan auth() dari Auth.js.
 
-  if (isAdminRoute) {
-    const role = (req.auth?.user as { role?: string } | undefined)?.role;
-    if (!req.auth || role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+export function middleware(request: NextRequest) {
+  const token =
+    request.cookies.get("authjs.session-token") ||
+    request.cookies.get("__Secure-authjs.session-token");
+
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
+
+  if (isAdminRoute && !token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
-});
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/admin/:path*"],
